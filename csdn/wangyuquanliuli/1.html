@@ -1,0 +1,276 @@
+<div class="article_content" id="article_content">
+ <p>
+  <span style="color:rgb(37,37,37); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px">
+   OAuth
+  </span>
+  <span style="color:rgb(37,37,37); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px">
+   （开放授权）是一个
+  </span>
+  <a class="new" href="http://zh.wikipedia.org/w/index.php?title=%E5%BC%80%E6%94%BE%E6%A0%87%E5%87%86&amp;action=edit&amp;redlink=1" style="text-decoration:none; color:rgb(165,88,88); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px" target="_blank" title="开放标准（页面不存在）">
+   开放标准
+  </a>
+  <span style="color:rgb(37,37,37); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px">
+   ，允许用户让第三方应用访问该用户在某一网站上存储的私密的资源（如照片，视频，联系人列表），而无需将用户名和
+  </span>
+  <a href="http://zh.wikipedia.org/wiki/%E5%AF%86%E7%A0%81" style="text-decoration:none; color:rgb(11,0,128); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px" target="_blank" title="密码">
+   密码
+  </a>
+  <span style="color:rgb(37,37,37); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px">
+   提供给第三方应用。协议地址为：
+   <a href="http://oauth.net/core/1.0/#rfc.section.A.5" target="_blank">
+    http://oauth.net/core/1.0/#rfc.section.A.5
+   </a>
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   研究的是OAuth1.0,因为2.0褒贬不一，连创始人都宣布脱离关系了。。。而1.0基本各个大网站都支持的不错
+  </span>
+ </p>
+ <p>
+  <span style="color:rgb(37,37,37); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px">
+   具体举个例子：
+  </span>
+ </p>
+ <p>
+  <span style="color:rgb(37,37,37); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px">
+   比如我们手机用虾米app来听歌，想要登录虾米但又不想注册一个新的账号，可以选择第三方登录，也就是用微博号登录。那么自然不能直接把微博的用户名密码告诉虾米，不然谁知道会发生什么事情呢？所以就用到了OAuth. 虾米将页面转到新浪提供的登录页面，我们在新浪登录页面输入用户名和密码，进行身份验证，然后新浪会给虾米一个token，如下（仅供参考格式，不要在意值是多少。。。）：
+  </span>
+ </p>
+ <p>
+  <span style="color:rgb(37,37,37); font-family:sans-serif; font-size:14px; line-height:22.399999618530273px">
+  </span>
+ </p>
+ <pre style="font-family:'Courier New',Courier,monospace; font-size:13px; background-color:rgb(247,247,247); padding:4px; width:auto">oauth_consumer_key="0685bd9184jfhq22",
+                oauth_token="ad180jjd733klru7",
+                oauth_signature_method="HMAC-SHA1",
+                oauth_signature="wOJIO9A2W5mFwDgiDvZbTSMK%2FPY%3D",
+                oauth_timestamp="137131200",
+                oauth_nonce="4572616e48616d6d65724c61686176",
+                oauth_version="1.0"</pre>
+ 之后的各种操作就可以利用以上的各个变量来进行身份验证，这样虾米也不知道用户的用户名和密码，但是可以利用微博账号来作为新的用户身份。
+ <p>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   注意：token指的是上面所有内容，包含所有的key-value，而oauth_token则是指token里面的一项，用于唯一标识用户。这点我之前矛盾了很久，到底说的token和oauth_token有没有区别。。。
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   下面具体来讲oauth身份认证的几个步骤（结合之前的例子）：
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   0）首先第三方app一定要去相应的网站注册。如上面的例子中，第三方式虾米app,resource owner是新浪微博，也就是虾米需要告诉新浪微博我要来使用你里面的数据，所以注册一下跟你说一声，这样虾米app会得到新浪微博返回的一个consumer_key和consumer_secret. 这两个也就是虾米app在新浪微博的一个身份，用户名+密码（当然为了安全，密码应该是通过邮件等方式发送给虾米app的）。这第0步不是每次身份认证都要用的，只是在app开发时，开发者需要做这一步而已。
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   1）虾米app向新浪微博申请要一个token，说我打算访问你的数据啦。申请的时候虾米app发送如下的http请求给新浪微博：
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   注意申请token的网址是：
+   <a class="external free" href="http://api.t.sina.com.cn/oauth/request_token" rel="nofollow" style="text-decoration:none; color:rgb(60,124,179); padding-right:13px; line-height:20px" target="_blank">
+    http://api.t.sina.com.cn/oauth/request_token
+   </a>
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+  </span>
+ </p>
+ <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">consumer secret - "MCD8BKwGdgPHvAuvgvz4EQpqDAtx89grbuNMRd7Eh98"
+oauth_consumer_key - GDdmIQH6jhtmLUypg82g
+oauth_nonce - QP70eNmVz8jvdPevU3oJD2AfF7R7odC2XJcn4XlZJqk
+oauth_signature_method - HMAC-SHA1
+oauth_timestamp - 1272323042
+oauth_version - 1.0</pre>
+ 注意注意：第一个consumer secret并不是http里面的内容，这是之后用来生成签名的（因为oauth1.0是针对http设计的，故传递secret不安全，所以采用签名机制）。解释一下几个变量的含义：这里的secret就是指第0步注册后得到的虾米app的密码。consumer_key就是刚才第0步得到的，nonce是number used once（具体形式有多种，可以数字可以字符串），只要知道是和timestamp搭配来标识唯一就行了（防止一些攻击），signature_method是产生签名的方法，一般用HMAC-SHA1,
+ timestamp一反面和nonce唯一标识token,另一方面用来保证token的实效性，version表示oauth版本。
+ <p>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   然后我们利用上述信息产生一个base string,如下（产生方法是http方法（get或者post）+网址（这里指新浪微博网址）+上述各值）：
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+  </span>
+ </p>
+ <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">POST&amp;https%3A%2F%2Fapi.t.sina.com.cn%2Foauth%2Frequest_token&amp;oauth_consumer_key%3DGDdmIQH6jhtmLUypg82g%26oauth_nonce%3DQP70eNmVz8jvdPevU3oJD2AfF7R7odC2XJcn4XlZJqk%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1272323042%26oauth_version%3D1.0</pre>
+ <span style="color:rgb(51,51,51); line-height:20px">
+  由于我们还未获取到oauth_token和oauth_token_secret，所以我们的BASE STRING里没有包含oauth_token和oauth_token_secret。
+ </span>
+ <br/>
+ <p>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   <span style="color:rgb(51,51,51); line-height:20px">
+    这个时候刚才提过的consumer_key就发挥作用了，用consumer_key作为key对base string进行
+    <span style="font-size:14px">
+     HMAC-SHA1签名，假设得到签名为“8wUi7m5HFQy76nowoCThusfgB+Q=”，则我们的http请求如下：
+    </span>
+   </span>
+  </span>
+  <span style="background-color:rgb(240,240,240); line-height:1.1em; font-size:14px; color:rgb(51,51,51)">
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   <span style="color:rgb(51,51,51); line-height:20px">
+    <span style="font-size:14px">
+    </span>
+   </span>
+  </span>
+ </p>
+ <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">oauth_nonce="QP70eNmVz8jvdPevU3oJD2AfF7R7odC2XJcn4XlZJqk",  oauth_signature_method="HMAC-SHA1", oauth_timestamp="1272323042", oauth_consumer_key="GDdmIQH6jhtmLUypg82g", oauth_signature="8wUi7m5HFQy76nowoCThusfgB%2BQ%3D", oauth_version="1.0"</pre>
+ 然后新浪那边利用我们传过去的这些信息对app进行身份验证，即在此利用上述信息产生签名，核对签名（因为新浪微博是有虾米app注册时的密码的，这样就达到了不用传递密码的效果，保证安全），如果app身份正确，则返回如下内容：
+ <p>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   <span style="color:rgb(51,51,51); line-height:20px">
+    <span style="font-size:14px">
+    </span>
+   </span>
+  </span>
+ </p>
+ <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">oauth_token=8ldIZyxQeVrFZXFOZH5tAwj6vzJYuLQpl0WUEYtWc&amp;oauth_token_secret=x6qpRnlEmW9JbQn4PQVVeVG8ZLPEx6A0TOebgwcuA</pre>
+ 即返回一个oauth_token和oauth_token_secret
+ <p>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   <span style="color:rgb(51,51,51); line-height:20px">
+    <span style="font-size:14px">
+     2)由于上述token只是一个临时token，虾米app需要用户授权
+    </span>
+   </span>
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px">
+   <span style="color:rgb(51,51,51); line-height:20px">
+    <span style="font-size:14px">
+     授权的网址是：
+     <a class="external free" href="http://api.t.sina.com.cn/oauth/authorize" rel="nofollow" style="text-decoration:none; color:rgb(60,124,179); padding-right:13px; line-height:20px" target="_blank">
+      http://api.t.sina.com.cn/oauth/authorize
+     </a>
+    </span>
+   </span>
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px; color:#333333">
+   <span style="line-height:20px">
+    虾米app会将页面转到授权网址，并携带oauth_token参数，如下：
+   </span>
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px; color:#333333">
+   <span style="line-height:20px">
+    <a class="external free" href="http://api.t.sina.com.cn/oauth/authorize?oauth_token=8ldIZyxQeVrFZXFOZH5tAwj6vzJYuLQpl0WUEYtWc" rel="nofollow" style="text-decoration:none; color:rgb(60,124,179); padding-right:13px; line-height:20px" target="_blank">
+     http://api.t.sina.com.cn/oauth/authorize?oauth_token=8ldIZyxQeVrFZXFOZH5tAwj6vzJYuLQpl0WUEYtWc
+    </a>
+    <br/>
+   </span>
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px; color:#333333">
+   然后需要用户输入他在新浪微博的用户名和密码，正确后新浪微博返回以下结果（注意verifier是1.0a加入的,为了解决
+   <a href="http://hueniverse.com/2009/04/23/explaining-the-oauth-session-fixation-attack/" target="_blank">
+    OAuth Session Fixation Attack
+   </a>
+   ）：
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px; color:#333333">
+  </span>
+ </p>
+ <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">oauth_token=8ldIZyxQeVrFZXFOZH5tAwj6vzJYuLQpl0WUEYtWc&amp;oauth_verifier=pDNg57prOHapMbhv25RNf75lVRd6JDsni1AJJIDYoTY
+</pre>
+ <h3 style="margin:10px 0px; padding:0px; font-size:14px; color:rgb(51,51,51); line-height:20px">
+  <span style="font-weight:normal">
+   3）第三步虾米app用上述信息去把之前的临时token变成access token(可以访问资源的token)
+  </span>
+ </h3>
+ <div>
+  网址为：
+  <a class="external free" href="http://api.t.sina.com.cn/oauth/access_token" rel="nofollow" style="text-decoration:none; color:rgb(60,124,179); padding-right:13px; line-height:20px" target="_blank">
+   http://api.t.sina.com.cn/oauth/access_token
+  </a>
+ </div>
+ <div>
+  目前已有信息为：
+ </div>
+ <div>
+  <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">oauth_consumer_key - GDdmIQH6jhtmLUypg82g
+    oauth_nonce - 9zWH6qe0qG7Lc1telCn7FhUbLyVdjEaL3MO5uHxn8
+    oauth_signature_method - HMAC-SHA1
+    oauth_token - 8ldIZyxQeVrFZXFOZH5tAwj6vzJYuLQpl0WUEYtWc
+    oauth_timestamp - 1272323047
+    oauth_verifier - pDNg57prOHapMbhv25RNf75lVRd6JDsni1AJJIDYoTY
+    oauth_version - 1.0</pre>
+  和第一步一样，利用上述信息产生一个base string,如下：
+ </div>
+ <div>
+  <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">POST&amp;https%3A%2F%2Fapi.t.sina.com.cn%2Foauth%2Faccess_token&amp;oauth_consumer_key%3DGDdmIQH6jhtmLUypg82g%26oauth_nonce%3D9zWH6qe0qG7Lc1telCn7FhUbLyVdjEaL3MO5uHxn8%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1272323047%26oauth_token%3D8ldIZyxQeVrFZXFOZH5tAwj6vzJYuLQpl0WUEYtWc%26oauth_verifier%3DpDNg57prOHapMbhv25RNf75lVRd6JDsni1AJJIDYoTY%26oauth_version%3D1.0</pre>
+  然后接着进行签名，这里的key为oauth_consumer_secret+oauth_token_secret,两者拼接成一个key，对上述base string进行签名。得
+ </div>
+ <div>
+  “PUw/dHA4fnlJYM6RhXk5IU/0fCc=”，于是发送的http请求如下：
+ </div>
+ <div>
+  <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">oauth_nonce="9zWH6qe0qG7Lc1telCn7FhUbLyVdjEaL3MO5uHxn8", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1272323047", oauth_consumer_key="GDdmIQH6jhtmLUypg82g", oauth_token="8ldIZyxQeVrFZXFOZH5tAwj6vzJYuLQpl0WUEYtWc", oauth_verifier="pDNg57prOHapMbhv25RNf75lVRd6JDsni1AJJIDYoTY", oauth_signature="PUw%2FdHA4fnlJYM6RhXk5IU%2F0fCc%3D", oauth_version="1.0"</pre>
+  然后新浪微博服务器端再次利用签名技术，对此进行身份验证，正确的话则返回：
+ </div>
+ <div>
+  <pre style="margin-top:0px; margin-bottom:0px; padding:1em; border:1px dashed rgb(47,111,171); background-color:rgb(249,249,249); line-height:1.1em; overflow:hidden">oauth_token=819797-Jxq8aYUDRmykzVKrgoLhXSq67TEa5ruc4GJC2rWimw&amp;oauth_token_secret=J6zix3FfA9LofH0awS24M3HcBYXO5nI1iYe8EfBA&amp;user_id=819797&amp;screen_name=openapi</pre>
+ </div>
+ 那么这里的oauth_token就是access token了，secret也就是access token的密码
+ <p>
+ </p>
+ <p>
+  <span style="font-size:14px; color:#333333">
+   4）虾米app利用access token就可以访问用户资源了，还是像上述一样，利用access token构造签名，然后申请资源，服务器验证身份后，返回用户的资料（比如微博头像等等），就不重复讲了
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px; color:#333333">
+   <br/>
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px; color:#333333">
+   总结：oauth1.0分成3步：1）request token 2) authorize token 3) access token
+  </span>
+ </p>
+ <p>
+  <span style="color:#333333">
+   <span style="font-size:14px">
+    优点：利用签名技术保证安全
+   </span>
+  </span>
+ </p>
+ <p>
+  <span style="color:#333333">
+   <span style="font-size:14px">
+    缺点：太过繁杂，不过貌似是由于http不安全只能设计成这样。。。
+   </span>
+  </span>
+ </p>
+ <p>
+  <span style="font-size:14px; color:#333333">
+   嗯，暂时就先说到这里吧。。。
+  </span>
+ </p>
+</div>

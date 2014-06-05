@@ -8,7 +8,7 @@ import io
 # import sys;
 # reload(sys);
 # sys.setdefaultencoding("gbk")
-
+# urllib2.socket.setdefaulttimeout(10)
 
 class ArticleItem:
     def __init__(self, _title):
@@ -30,16 +30,20 @@ class CSDNCrawler:
         self.uname = uname
         self.blog_list = []
         self.blog_count = 0
-        self.soup = self.make_soup(CSDNCrawler.baseurl)        
+        req_url = CSDNCrawler.baseurl + "/"  + self.uname + "/" + CSDNCrawler.article
+        self.soup = self.make_soup(req_url)        
 
 
     def make_soup(self, _url):
-        req_url = _url + "/"  + self.uname + "/" + CSDNCrawler.article
-        req = urllib2.Request(
-            url = req_url,
-            data = None,
-            headers = CSDNCrawler.headers)
-        res = urllib2.urlopen(req)
+        try:
+            req = urllib2.Request(
+                url = _url,
+                data = None,
+                headers = CSDNCrawler.headers)
+            res = urllib2.urlopen(req)
+        except urllib2.URLError, e:
+            print "http err:", e.code
+            return None
         return BeautifulSoup(res.read())
 
     def get_blogs_href(self):
@@ -66,11 +70,11 @@ class CSDNCrawler:
         self.save_info()
 
     def save_info(self):
-        udir = "csdn/" + self.uname
-        if not os.path.exists(udir):
-            os.makedirs(udir)
+        self.udir = "csdn/" + self.uname
+        if not os.path.exists(self.udir):
+            os.makedirs(self.udir)
         try:
-            with open(udir + "/blog-listst.html", "w+") as user_blog_list:
+            with open(self.udir + "/blog-listst.html", "w+") as user_blog_list:
                 # format_list = []
                 # user_blog_list.write(unicode("<h4>title ------ brief ------ href</h4>\n"))
                 for eachitem in self.blog_list:
@@ -83,15 +87,20 @@ class CSDNCrawler:
             traceback.print_exc()
 
 
+    def get_content(self):
+        title_order = 0
+        try:
+            for eachitem in self.blog_list:
+                title_order += 1
+                # get content of each blog
+                blog_soup = self.make_soup(eachitem.href)
+                if blog_soup == None: continue
+                content = blog_soup.find("div", attrs={"class":"article_content"})
+                # save content
+                blog_path = "%s/%s.html" % (self.udir, str(title_order))
+                with open(blog_path, "w+") as eachblog:
+                    eachblog.write(content.prettify().encode("gbk", "ignore"))
+                    print "%s's blog: %d.html saved" % (self.uname, title_order)
+        except Exception:
+            traceback.print_exc()
 
-
-
-
-# test
-def main():
-    crawler = CSDNCrawler("wxg694175346")
-    crawler.get_list_item()
-
-
-if __name__ == '__main__':
-    main()

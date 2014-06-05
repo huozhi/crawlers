@@ -1,0 +1,90 @@
+<div class="article_content" id="article_content">
+ <p>
+  pythonn垃圾收集方面的内容如果要细讲还是挺多的，这里只是做一个大概的概括
+ </p>
+ <p>
+  python最主要和绝大多数时候用的都是引用计数,每一个PyObject定义如下：
+ </p>
+ <pre class="cpp" name="code">#define PyObject_HEAD                   \
+    Py_ssize_t ob_refcnt;               \
+    struct _typeobject *ob_type;
+typedef struct _object {
+    PyObject_HEAD
+} PyObject;</pre>
+ 每个pyobject都有一个refcnt来记录他们自己的引用数，一旦引用数为0，就进行回收
+ <p>
+ </p>
+ <p>
+  引用计数的优点在于实时性，一旦没有其他对象引用了，就能立马进行回收，看起来十分不错，但为什么好多语言都没有采用该方案，因为引用计数有一个致命的缺点，无法解决循环引用问题，比如:
+ </p>
+ <p>
+ </p>
+ <pre class="python" name="code">a = []
+b = []
+a.append(b)
+b.append(a)</pre>
+ <br/>
+ 其实并没有其他变量引用a,b那么他们实际上应该被回收掉，但由于相互引用的关系，他们的引用数都为1，无法被回收。
+ <p>
+ </p>
+ <p>
+  在python中，相互引用的问题仅仅存在与容器里面，例如list,dictionary,class,instance。为了解决该问题，python引入了标记——清除和分代——回收另外两种机制。
+ </p>
+ <p>
+  事实上，python中的容器并没有之前讲的那么简单，在pyobject_head之前，还有一个PyGC_head,也就是专门用来处理容器的循环引用问题的。
+ </p>
+ <p>
+ </p>
+ <pre class="cpp" name="code">typedef union _gc_head {
+    struct {
+        union _gc_head *gc_next;
+        union _gc_head *gc_prev;
+        Py_ssize_t gc_refs;
+    } gc;
+    long double dummy;  /* force worst-case alignment */
+} PyGC_Head;</pre>
+ <br/>
+ <br/>
+ <p>
+ </p>
+ <p>
+  所有创建的容器类的对象都会被记录到可收集对象链表中，通过上面的结构我们可以知道其实是构建了一个双向链表，这样我们就可以来跟踪所有可能产生循环引用的情况了。而像int,string等简单的不是容器类型的，只要引用技术为0，就会被回收。但是如果频繁的malloc和free会严重影响效率，所以python采用了大量的对象池来提高效率。
+ </p>
+ <p>
+  标记——清除包括了垃圾回收的两个方面：（1）寻找可以回收的对象（2）回收对象，python中的标记会从root object开始，遍历所有容器类对象，查找出可以通过引用来到达的一些对象，把他们放到由reachable维护的链表中,对于不能到达的放到unbreachable维护的链表中，此过程结束之后，对unreachable里面的元素进行回收即可。
+ </p>
+ <p>
+  那么如何对应之前循环引用的情况呢？python里面会产生一个有效的引用数，存在gc.gc_refs里面，像上面的a，b真实引用数为1，但有效的引用数为0（循环中的引用数都减1），由于不能直接改pyobjec里面的refcnt，否则会产生一系列问题，我们可以将有效的引用数记到gc.gc_refs里面，那么a,b 的真实有效引用数都为0，所以他们可以被回收。
+ </p>
+ <p>
+  下面是另外一种情况：
+ </p>
+ <p>
+ </p>
+ <pre class="python" name="code">a = []
+b = []
+c = a
+a.append(b)
+b.append(a)</pre>
+ 这里ab也是循环引用，但是多了c来引用a，通过计算循环中的有效引用计数可得a的引用数为1,b的引用数为0，看起来b应该被回收，但实际上因为a是不可被回收的，a又引用了b，所以b也会被放入在reachable链表中，不被回收，其gc.gc_refs还是会被置1的。
+ <p>
+ </p>
+ <p>
+  <br/>
+ </p>
+ <p>
+  另外一种分代回收，是说内存中有的对象会频繁的malloc和free，有的则比较长久，如果一个对象经过多次垃圾收集和清除之后还存在的话，那么我们就可以认为，这个对象是长时间有用的，不用去频繁检测回收它。python中分为3代，分别是3个链表维护，0代最多维护700个对象，1代10个，2代10个，如果对象超过这个数了，就会调用标记——清除算法来进行回收。可以想到，0代的对象经过一段时间后会到1代2代中去，然后对它们的检测回收会相比于0代的不那么频繁了
+ </p>
+ <p>
+  <br/>
+ </p>
+ <p>
+  要注意的是，python主要的机制还是引用技术，标记——清除和分代收集只是为了弥补引用计数的缺点而添加的，也就是说，后两者基本只在容器类的循环引用上能发挥作用
+ </p>
+ <p>
+  <br/>
+ </p>
+ <p>
+  更加具体的实现，请参考《python源码剖析》最后一章
+ </p>
+</div>

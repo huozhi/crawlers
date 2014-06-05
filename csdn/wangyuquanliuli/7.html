@@ -1,0 +1,86 @@
+<div class="article_content" id="article_content">
+ <p>
+  最近在看《深度探索C++对象模型》，学到了很多东西。。。
+ </p>
+ <p>
+  C++新手一般有两个常见的误解：
+ </p>
+ <p>
+  1.任何class如果没有定义default constructor，就会被合成出一个来。
+ </p>
+ <p>
+  2.编译器合成出来的default constructor会显示设定“class 内每一个data member的默认值”
+ </p>
+ <p>
+  注意：以上两个说法都是错误的！
+ </p>
+ <p>
+  <br/>
+ </p>
+ <p>
+  编译器只会在以下4种情况，并且class自身没有定义default constructor的情况下，帮忙合成default constructor.
+ </p>
+ <p>
+  1."带有default constructor"的member class object
+ </p>
+ <p>
+  也就是说，虽然class A没有显示定义default constructor,但是A class内的成员变量B,B本身是提供显示的default constructor的，这种情况下会为A构造一个default constructor.在该构造函数里会调用B的构造函数，当然只有在被调用的时候才会被合成出来。
+ </p>
+ <p>
+  <br/>
+ </p>
+ <p>
+  2.“带有default constructor"的base class.
+ </p>
+ <p>
+  也就是说，虽然class A没有显示定义default constructor,但是A class 继承自B class,B本身是提供显示的default constructor的，这种情况下会为A构造一个default constructor.
+ </p>
+ <p>
+  <br/>
+ </p>
+ <p>
+  3.“带有一个virtual function"的class.
+ </p>
+ <p>
+  也就是说，虽然class A没有显示定义default constructor,但是A class 内有虚函数，既然有虚函数，那么在初始化对象的时候，需要初始化其中的指针vptr指向vtable，所以这种情况下会为A构造一个default constructor.
+ </p>
+ <p>
+  <br/>
+ </p>
+ <p>
+  4.“带有一个virtual base class" 的class
+ </p>
+ <p>
+  即下面这种情况：
+ </p>
+ <p>
+ </p>
+ <pre class="cpp" code_snippet_id="376867" name="code" snippet_file_name="blog_20140604_1_9499770">class X
+{
+	public:int i;
+};
+class A:public virtual X
+{
+	public:int j;
+};
+class B:public virtual X
+{
+	public:int d;
+};
+class C:public A,public B
+{
+public:
+	int k;
+}</pre>
+ <br/>
+ 这种情况下，编译器会为A，B，C合成default constructor,理由是derived class中都有指针指向virtual base class,需要初始化该指针。
+ <p>
+  <br/>
+ </p>
+ <p>
+  同时需要注意，只有再必要的时候编译器才会合成出来，如程序中逗没建该class的对象，故编译器肯定也不用合成出来。
+ </p>
+ <p>
+  另外，编译器合成出来的，只是为了满足编译要求，只对那些必要的值进行初始化，不会初始化所有值，初始化所有值这是满足程序员要求了。。。编译器没那么勤奋，而且也不知道其他值该初始化成什么值。。。
+ </p>
+</div>

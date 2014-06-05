@@ -1,0 +1,171 @@
+<div class="article_content" id="article_content">
+ <p>
+  之所以用matleb实现，是因为这是数据挖掘课的几个大作业之一，作业要求，不然也不会这么蛋疼用matlab....(因为我不会matlab...)
+ </p>
+ <p>
+  <br/>
+ </p>
+ <p>
+  朴素贝叶斯原理非常简单，最重要的就是概率公式：
+ </p>
+ <p>
+  <img alt="" src="http://img.blog.csdn.net/20131130225243531?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2FuZ3l1cXVhbmxpdWxp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"/>
+ </p>
+ <p>
+  其余的内容介绍可以参考：
+  <a href="http://zh.wikipedia.org/wiki/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8" target="_blank">
+   http://zh.wikipedia.org/wiki/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8
+  </a>
+  <br/>
+ </p>
+ <p>
+ </p>
+ <p>
+  <span style="color:#333333">
+   下面贴用matlab的具体实现算法：
+  </span>
+ </p>
+ <p>
+  <span style="color:#333333">
+   train阶段：
+  </span>
+ </p>
+ <p>
+  <span style="color:#333333">
+  </span>
+ </p>
+ <pre class="plain" code_snippet_id="115951" name="code" snippet_file_name="blog_20131217_1_2485651">[spmatrix, tokenlist, trainCategory] = readMatrix('MATRIX.TRAIN');
+
+trainMatrix = full(spmatrix);
+numTrainDocs = size(trainMatrix, 1);
+numTokens = size(trainMatrix, 2);
+
+% trainMatrix is now a (numTrainDocs x numTokens) matrix.
+% Each row represents a unique document (email).
+% The j-th column of the row $i$ represents the number of times the j-th
+% token appeared in email $i$. 
+
+% tokenlist is a long string containing the list of all tokens (words).
+% These tokens are easily known by position in the file TOKENS_LIST
+
+% trainCategory is a (1 x numTrainDocs) vector containing the true 
+% classifications for the documents just read in. The i-th entry gives the 
+% correct class for the i-th email (which corresponds to the i-th row in 
+% the document word matrix).
+
+% Spam documents are indicated as class 1, and non-spam as class 0.
+% Note that for the SVM, you would want to convert these to +1 and -1.
+
+
+% YOUR CODE HERE
+positiveSize = length(find(trainCategory));
+negitiveSize = length(trainCategory)-positiveSize;
+p1 = positiveSize/numTrainDocs;
+p0 = negitiveSize/numTrainDocs;
+trainCategory = full(trainCategory);
+trainMatrixResult1 = linspace(0,0,numTokens);
+trainMatrixResult0 = linspace(0,0,numTokens);
+for i=1:numTrainDocs
+    for j=1:numTokens
+        if abs(trainCategory(1,i)-1)&lt;=1e-10
+            trainMatrixResult1(j) = trainMatrixResult1(j)+trainMatrix(i,j);
+        else
+            trainMatrixResult0(j) = trainMatrixResult0(j)+trainMatrix(i,j);
+        end
+    end
+end
+class1sum = sum(trainMatrixResult1);
+class0sum = sum(trainMatrixResult0);
+for i=1:numTokens
+    trainMatrixResult1(i) = 1000*trainMatrixResult1(i)/class1sum;
+    trainMatrixResult0(i) = 1000*trainMatrixResult0(i)/class0sum;
+end</pre>
+ <br/>
+ test阶段：
+ <p>
+  <span style="color:#333333">
+  </span>
+ </p>
+ <pre class="plain" code_snippet_id="115951" name="code" snippet_file_name="blog_20131217_2_5790293">[spmatrix, tokenlist, category] = readMatrix('MATRIX.TEST');
+
+testMatrix = full(spmatrix);
+numTestDocs = size(testMatrix, 1);
+numTokens = size(testMatrix, 2);
+
+% Assume nb_train.m has just been executed, and all the parameters computed/needed
+% by your classifier are in memory through that execution. You can also assume 
+% that the columns in the test set are arranged in exactly the same way as for the
+% training set (i.e., the j-th column represents the same token in the test data 
+% matrix as in the original training data matrix).
+
+% Write code below to classify each document in the test set (ie, each row
+% in the current document word matrix) as 1 for SPAM and 0 for NON-SPAM.
+
+% Construct the (numTestDocs x 1) vector 'output' such that the i-th entry 
+% of this vector is the predicted class (1/0) for the i-th  email (i-th row 
+% in testMatrix) in the test set.
+output = zeros(numTestDocs, 1);
+
+%---------------
+% YOUR CODE HERE
+%---------------
+for i=1:numTestDocs
+    belongTo1 = 1;
+    belongTo0 = 1;
+    for j=1:numTokens
+        if testMatrix(i,j) ~= 0
+            tokenIndex = j;
+            belongTo1 = belongTo1*trainMatrixResult1(tokenIndex);
+            belongTo0 = belongTo0*trainMatrixResult0(tokenIndex);
+        end
+    end
+    if belongTo1&gt;belongTo0
+        output(i) = 1;
+    else
+        output(i) = 0;
+    end
+end
+            
+
+% Compute the error on the test set
+error=0;
+for i=1:numTestDocs
+  if (category(i) ~= output(i))
+    error=error+1;
+  end
+end
+
+%Print out the classification error on the test set
+error/numTestDocs
+
+</pre>
+ 分类结果：
+ <p>
+  <span style="color:#333333">
+   <img alt="" src="http://img.blog.csdn.net/20131217154748859?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2FuZ3l1cXVhbmxpdWxp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"/>
+   <br/>
+  </span>
+ </p>
+ <p>
+  <span style="color:#333333">
+   图形化展示：
+  </span>
+ </p>
+ <p>
+  <span style="color:#333333">
+   <img alt="" src="http://img.blog.csdn.net/20131217154813593?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2FuZ3l1cXVhbmxpdWxp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"/>
+   <br/>
+  </span>
+ </p>
+ <p>
+  <br/>
+  <span style="color:#ff0000">
+   请各位亲不要直接复制黏贴就交上去哦~
+  </span>
+ </p>
+ <p>
+  <span style="color:#333333">
+  </span>
+ </p>
+ <br/>
+</div>
