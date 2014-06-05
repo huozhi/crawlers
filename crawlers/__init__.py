@@ -5,6 +5,10 @@ from bs4 import BeautifulSoup
 import traceback
 import io
 
+# import sys;
+# reload(sys);
+# sys.setdefaultencoding("gbk")
+
 
 class ArticleItem:
     def __init__(self, _title):
@@ -66,14 +70,14 @@ class CSDNCrawler:
         if not os.path.exists(udir):
             os.makedirs(udir)
         try:
-            with io.open(udir + "/blog-listst.html", "w+", encoding="gbk") as user_blog_list:
+            with open(udir + "/blog-listst.html", "w+") as user_blog_list:
                 # format_list = []
                 # user_blog_list.write(unicode("<h4>title ------ brief ------ href</h4>\n"))
                 for eachitem in self.blog_list:
                     html_item = "<a href='%s'><h2>%s</h2></a><h4>%s</h4>\n"\
                         % (eachitem.href, eachitem.title, eachitem.brief)
                     # format_list.append(html_item)
-                    user_blog_list.write(unicode(html_item))
+                    user_blog_list.write(html_item.encode("gbk", "ignore"))
             print "%s'blog list saved!" % self.uname
         except Exception, e:
             traceback.print_exc()

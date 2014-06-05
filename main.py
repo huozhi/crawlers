@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from crawlers import CSDNCrawler
 
 def main():
-    crawler = CSDNCrawler("wxg694175346")
+    crawler = CSDNCrawler("wangyuquanliuli")
     crawler.get_list_item()
 
 

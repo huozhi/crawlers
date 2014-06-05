@@ -1,0 +1,294 @@
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/24850761'><h2>[置顶]|对OAuth1.0协议的理解</h2></a><h4>OAuth（开放授权）是一个开放标准，允许用户让第三方应用访问该用户在某一网站上存储的私密的资源（如照片，视频，联系人列表），而无需将用户名和密码提供给第三方应用。协议地址为：http://oauth.net/core/1.0/#rfc.section.A.5
+研究的是OAuth1.0,因为2.0褒贬不一，连创始人都宣布脱离关系了。。。而1.0基本各个大网站都支持的不错
+具体举个例子：
+比如...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/17378317'><h2>[置顶]|MNIST手写数字体分类--KNN matlab实现</h2></a><h4>关于数据集神马的，请直接参考：http://blog.csdn.net/wangyuquanliuli/article/details/11606435
+这里直接给出KNN matlab的实现
+
+
+trainImages = loadMNISTImages('train-images.idx3-ubyte');      
+trainLabels = loadMNISTLabels('tr...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/17048745'><h2>[置顶]|朴素贝叶斯实现垃圾邮件分类------matlab实现</h2></a><h4>之所以用matleb实现，是因为这是数据挖掘课的几个大作业之一，作业要求，不然也不会这么蛋疼用matlab....(因为我不会matlab...)
+
+
+朴素贝叶斯原理非常简单，最重要的就是概率公式：
+
+其余的内容介绍可以参考：http://zh.wikipedia.org/wiki/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%8...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/8865428'><h2>[置顶]|用python制造一条令人涨姿势的贪吃蛇</h2></a><h4>之前看了一副大涨姿势的贪吃蛇的图，甚为震精，可以再观赏一下：
+
+
+既然talk is cheap,show me the code ,我就按照http://hawstein.com/posts/snake-ai.html的教程写了一个，当然并没有能像上图那么令人涨姿势，但是让贪吃蛇自动跑很长时间还是做到了的
+
+
+首先是照教程所说，网上下了一个可以根据方向键来控制贪吃蛇的一个代码版本，直...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/8691448'><h2>[置顶]|python 垃圾收集机制</h2></a><h4>pythonn垃圾收集方面的内容如果要细讲还是挺多的，这里只是做一个大概的概括
+python最主要和绝大多数时候用的都是引用计数,每一个PyObject定义如下：
+#define PyObject_HEAD                   \
+    Py_ssize_t ob_refcnt;               \
+    struct _typeobject *ob_type;...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/8654478'><h2>[置顶]|《python源码剖析》之实现small python</h2></a><h4>基本上是照着《python源码剖析》里面的代码写的，当然它有一点细节的地方没有指出来，我也就补全了一下，
+先来看下运行的效果图：
+
+
+下面直接上代码：
+#include
+#include
+#include
+#include
+#include
+#include
+#include
+#include
+using namespace std;
+#define PyObject_HEAD...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/28466967'><h2>C++何时会帮忙合成default constructor</h2></a><h4>最近在看《深度探索C++对象模型》，学到了很多东西。。。
+C++新手一般有两个常见的误解：
+1.任何class如果没有定义default constructor，就会被合成出一个来。
+2.编译器合成出来的default constructor会显示设定“class 内每一个data member的默认值”
+注意：以上两个说法都是错误的！
+
+
+编译器只会在以下4种情况，并且class自...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/28285673'><h2>微软实习面经</h2></a><h4>开学前罩罩突然和我说他们大组刚好要招实习生，问要不要给我内推一下，我说“这肯定的啊”，正好想找你内推呢。。。。。
+
+
+然后感谢罩罩帮我修改了一下简历（主要是英文太渣。。。）
+
+
+然后投了简历三天内毫无动静。。。。。
+
+
+然后我安慰自己说：这三天有两天是双休日！他们都不上班好吧。。。。。
+
+
+嗯，然后第四天，也就是礼拜一收到一位微软工程师（也就是我的mentor）的邮件，来约...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/24435433'><h2>关于C++ 牛人推荐的好书（转载）</h2></a><h4>首先肯定要读一读Bjarne Stroustrup的The
+ Design and Evolution of C++，了解
+一下这个语言的历史。接下来就可以看别的书了，但要不停地回头看这本书，看到
+你不断地学到的新技术是怎么样一点点地被接纳到这个语言中去的。
+第一本书因人而异，基础好一些的，可以看Stanley
+ B. Lippman的C++ Primer，这
+本书非常地巨大，你打星号...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/23131147'><h2>Codeforces Round #240 (Div. 2)</h2></a><h4>500pt:
+
+
+A. Mashmokh and Lights
+
+
+time limit per test
+1 second
+
+
+memory limit per test
+256 megabytes
+
+
+input
+standard input
+
+
+output
+standard output
+
+
+
+Mashmokh works in a facto...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/21881759'><h2>Codeforces Round #238 (Div. 2)</h2></a><h4>500pt:
+题目链接：http://codeforces.com/problemset/problem/405/A
+
+
+A. Gravity Flip
+
+
+time limit per test
+1 second
+
+
+memory limit per test
+256 megabytes
+
+
+input
+standard input
+
+
+output
+st...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/21113829'><h2>Codeforces Round #235 (Div. 2)</h2></a><h4>500pt:
+题目链接：http://codeforces.com/problemset/problem/401/A
+
+
+A. Vanya and Cards
+
+
+time limit per test
+1 second
+
+
+memory limit per test
+256 megabytes
+
+
+input
+standard input
+
+
+output...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/19753085'><h2>Codeforces Round #231 (Div.2)</h2></a><h4>500pt:
+题目链接：http://codeforces.com/problemset/problem/394/A
+分析：其实就是个a+b=c的式子，要使得通过移动最多一根火柴使等式成立，那么|a+b-c|=+-2或者=0
+代码：
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include ...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/19285121'><h2>topcoder srm609 div1</h2></a><h4>总的来说这次的div1 前两题都比以前简单，我这种不碰500的都开始做500分的题了= =
+250pt题目：
+
+
+
+
+
+Problem Statement 
+
+
+
+
+Magical Girl Illy uses "magical strings" to cast spells. For her, a string X is magical if and only if t...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/18992427'><h2>topcoder srm608 div1 300分题</h2></a><h4>题目：
+
+
+
+
+
+Problem Statement 
+
+
+
+
+TopCoder admin mystic_tc is sitting in front of a table. He found N sealed boxes of candies on the table.
+
+He is not sure how many candies each box contai...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/18923119'><h2>topcoder srm607 div2</h2></a><h4>250pt:
+题目：
+
+
+
+
+
+Problem Statement 
+
+
+
+
+
+Andrew drew a bunch of points on a sheet of graph paper. You are given the coordinates of these points in two vector s:
+X and Y. That is, for eac...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/18884387'><h2>topcoder srm606 div2</h2></a><h4>250pt:
+题目：
+
+
+
+
+
+Problem Statement 
+
+
+
+
+Elly has a string S of uppercase letters and a magic device that can modify the string. The strength of the device is an int
+L.
+
+The device does ...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/18766277'><h2>codeforce round#226 div2</h2></a><h4>500pt:
+链接：http://codeforces.com/problemset/problem/385/A
+分析：找前一个减后一个差最大的就行
+代码：
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#includ...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/17710915'><h2>codeforce goodbye 2013</h2></a><h4>500pt:
+链接：http://codeforces.com/contest/379/problem/A
+分析：每b根就能再生成一根，本着不要浪费的原则就行
+代码：
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#i...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/17675801'><h2>Codeforces Round #222 (Div. 2)</h2></a><h4>500pt:
+链接：http://codeforces.com/contest/378/problem/A
+分析：太水了。。。
+代码：
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/17554741'><h2>Codeforces Round #221 (Div. 2)</h2></a><h4>500pt:
+链接：http://codeforces.com/problemset/problem/376/A
+分析：水题，模拟实现一下就行，要注意的是支点左右的和要用long long 来做，不然会错
+代码：
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/17316137'><h2>Codeforces Round #219 (Div. 2)</h2></a><h4>500pt:
+题目链接：http://codeforces.com/problemset/problem/373/A
+分析：用一个map来记录有没有超过两倍的给定值就行
+代码：
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+#includ...</h4>
+<a href='http://blog.csdn.net/wangyuquanliuli/article/details/17206947'><h2>Codeforces Round #218 (Div. 2)</h2></a><h4>500pt,
+题目链接：http://codeforces.com/problemset/problem/371/A
+分析：k-periodic说明每一段长度为k，整个数组被分成这样长度为k的片段，要使得修改最少，求出k长度的片段中每个位置出现次数最多的数就行。
+代码：
+#include 
+#include 
+#include 
+#include 
+#include 
+#include 
+...</h4>
