@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import urllib2
 import os
 from bs4 import BeautifulSoup
@@ -30,6 +31,7 @@ class CSDNCrawler:
         self.uname = uname
         self.blog_list = []
         self.blog_count = 0
+        self.page_count = 0
         req_url = CSDNCrawler.baseurl + "/"  + self.uname + "/" + CSDNCrawler.article
         self.soup = self.make_soup(req_url)        
 
@@ -67,9 +69,8 @@ class CSDNCrawler:
             article = ArticleItem(title)
             article.set_attr(href, brief)
             self.blog_list.append(article)
-        self.save_info()
 
-    def save_info(self):
+    def save_user_info(self):
         self.udir = "csdn/" + self.uname
         if not os.path.exists(self.udir):
             os.makedirs(self.udir)
@@ -87,7 +88,7 @@ class CSDNCrawler:
             traceback.print_exc()
 
 
-    def get_content(self):
+    def get_blog_content(self):
         title_order = 0
         try:
             for eachitem in self.blog_list:
@@ -98,9 +99,26 @@ class CSDNCrawler:
                 content = blog_soup.find("div", attrs={"class":"article_content"})
                 # save content
                 blog_path = "%s/%s.html" % (self.udir, str(title_order))
-                with open(blog_path, "w+") as eachblog:
-                    eachblog.write(content.prettify().encode("gbk", "ignore"))
-                    print "%s's blog: %d.html saved" % (self.uname, title_order)
+                self.save_blog(blog_path)
         except Exception:
             traceback.print_exc()
+
+    def save_blog(self, blog_path):
+        if not os.path.exists(path):
+            with open(blog_path, "w+") as eachblog:
+                eachblog.write(content.prettify().encode("gbk", "ignore"))
+                print "%s's blog: %d.html saved" % (self.uname, title_order)
+
+
+    def count_blog(self):
+        total = self.soup.find("div",attrs={"class":"pagelist"})
+        # print type(total)
+        count = total.span.text.encode('gbk').split(u'条'.encode('gbk'))[0]
+        # print int(count)
+        self.blog_count = int(count)
+        soup = BeautifulSoup(str(total))
+        pages = soup.find_all('a')[-1]['href'][::-1].split('/')[0]
+        # print int(pages)
+        self.page_count = int(count)
+
 
