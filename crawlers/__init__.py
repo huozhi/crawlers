@@ -121,4 +121,12 @@ class CSDNCrawler:
         # print int(pages)
         self.page_count = int(count)
 
+    def crawl_begin_id(self):
+        save_count = sum([lem(files) for root,dirs,files in os.walk(self.udir)])-1
+        if save_count < self.blog_count:
+            print 'unsaved files count:', self.blog_count - save_count
+            return self.blog_count - save_count
+        else:
+            return self.blog_count
 
+    
