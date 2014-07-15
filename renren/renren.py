@@ -2,6 +2,7 @@
 
 import urllib2
 import cookielib
+from bs4 import BeautifulSoup
 
 cookies = urllib2.HTTPCookieProcessor(cookielib.CookieJar())
 opener = urllib2.build_opener(cookies, urllib2.HTTPHandler)
@@ -15,12 +16,10 @@ req = urllib2.Request(
     )
 html = opener.open(req).read()
 
-from bs4 import BeautifulSoup
 
 soup = BeautifulSoup(html)
 status = soup.find_all("span", attrs={"class":"status-detail"})
-with open('get.html','w+') as html:    
+with open('./download/dongbeilinux.html','w+') as html:    
     for state in status:
         details = (state.get_text() + '<br/><br/>').encode('gbk')
         html.write(details)
-print 'finish'
