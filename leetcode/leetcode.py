@@ -62,7 +62,7 @@ def download(undownload):
 
 
 def main():
-    if not os.exists(dirpath):
+    if not os.path.exists(dirpath):
         os.makedirs(dirpath)
     if len(sys.argv) > 1:
         answers = getUndownload()
